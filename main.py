@@ -70,13 +70,13 @@ def replacer(m):
         return rep
     return m.expand(r'\g<0>')
 
-models_with_classes = re.sub(REG_CLASS_DEF, replacer, models, re.MULTILINE or re.DOTALL)
+models_with_classes = re.sub(REG_CLASS_DEF, replacer, models, re.MULTILINE | re.DOTALL)
 
 
 print "Adding header with TenantedBase and imports"
 
 # Insert our magic header at an appropriate point (before the first class declaration)
-insertion_point = re.search(r'^class\s', models_with_classes, re.MULTILINE or re.DOTALL)
+insertion_point = re.search(r'^class\s', models_with_classes, re.MULTILINE | re.DOTALL)
 
 models_with_header = models_with_classes[:insertion_point.start()] + TENANTS_TABLE_CODE + models_with_classes[insertion_point.start():]
 
