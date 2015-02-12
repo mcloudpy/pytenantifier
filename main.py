@@ -55,7 +55,7 @@ class TenantedBase(%s):
 """ % (args.baseclass, args.baseclass)
 
 REG_IDENTIFIER = r"[a-zA-Z_][a-zA-Z0-9_]*"
-REG_CLASS_DEF = r"class\s*(" + REG_IDENTIFIER + r")\(%s\):" % args.baseclass
+REG_CLASS_DEF = r"class\s*(" + REG_IDENTIFIER + r")\(%s" % re.escape(args.baseclass)
 
 
 
@@ -65,7 +65,9 @@ models = args.models_file.read()
 # Inherit from TenantBase rather than Base
 def replacer(m):
     if m.groups(1) not in ('AlembicVersion',):
-        return m.expand(r'class \1(TenantedBase):')
+        rep = m.expand(r'class \1(TenantedBase')
+        print "Replacing class %s with %s" % (m.groups(1), rep)
+        return rep
     return m.expand(r'\g<0>')
 
 models_with_classes = re.sub(REG_CLASS_DEF, replacer, models, re.MULTILINE or re.DOTALL)
