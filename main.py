@@ -73,10 +73,13 @@ def replacer(m):
 models_with_classes = re.sub(REG_CLASS_DEF, replacer, models, re.MULTILINE or re.DOTALL)
 
 
+print "Adding header with TenantedBase and imports"
+
 # Insert our magic header at an appropriate point (before the first class declaration)
 insertion_point = re.search(r'^class\s', models_with_classes, re.MULTILINE or re.DOTALL)
 
 models_with_header = models_with_classes[:insertion_point.start()] + TENANTS_TABLE_CODE + models_with_classes[insertion_point.start():]
 
+print "Writing to the output file"
 
 args.outfile.write(models_with_header)
